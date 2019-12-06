@@ -1,7 +1,7 @@
 var test = require('tap').test
 var LRU = require('../')
 
-test('basic', function (t) {
+test('basic', function(t) {
   var cache = new LRU({ max: 10 })
   cache.set('key', 'value')
   t.equal(cache.get('key'), 'value')
@@ -11,7 +11,7 @@ test('basic', function (t) {
   t.end()
 })
 
-test('least recently set', function (t) {
+test('least recently set', function(t) {
   var cache = new LRU(2)
   cache.set('a', 'A')
   cache.set('b', 'B')
@@ -22,7 +22,7 @@ test('least recently set', function (t) {
   t.end()
 })
 
-test('lru recently gotten', function (t) {
+test('lru recently gotten', function(t) {
   var cache = new LRU(2)
   cache.set('a', 'A')
   cache.set('b', 'B')
@@ -34,7 +34,7 @@ test('lru recently gotten', function (t) {
   t.end()
 })
 
-test('del', function (t) {
+test('del', function(t) {
   var cache = new LRU(2)
   cache.set('a', 'A')
   cache.del('a')
@@ -42,7 +42,7 @@ test('del', function (t) {
   t.end()
 })
 
-test('max', function (t) {
+test('max', function(t) {
   var cache = new LRU(3)
 
   // test changing the max, verify that the LRU items get dropped.
@@ -81,7 +81,7 @@ test('max', function (t) {
   t.end()
 })
 
-test('reset', function (t) {
+test('reset', function(t) {
   var cache = new LRU(10)
   cache.set('a', 'A')
   cache.set('b', 'B')
@@ -93,13 +93,13 @@ test('reset', function (t) {
   t.end()
 })
 
-test('basic with weighed length', function (t) {
+test('basic with weighed length', function(t) {
   var cache = new LRU({
     max: 100,
-    length: function (item, key) {
+    length: function(item, key) {
       t.isa(key, 'string')
       return item.size
-    }
+    },
   })
   cache.set('key', { val: 'value', size: 50 })
   t.equal(cache.get('key').val, 'value')
@@ -110,10 +110,12 @@ test('basic with weighed length', function (t) {
   t.end()
 })
 
-test('weighed length item too large', function (t) {
+test('weighed length item too large', function(t) {
   var cache = new LRU({
     max: 10,
-    length: function (item) { return item.size }
+    length: function(item) {
+      return item.size
+    },
   })
   t.equal(cache.max, 10)
 
@@ -125,10 +127,12 @@ test('weighed length item too large', function (t) {
   t.end()
 })
 
-test('least recently set with weighed length', function (t) {
+test('least recently set with weighed length', function(t) {
   var cache = new LRU({
     max: 8,
-    length: function (item) { return item.length }
+    length: function(item) {
+      return item.length
+    },
   })
   cache.set('a', 'A')
   cache.set('b', 'BB')
@@ -141,10 +145,12 @@ test('least recently set with weighed length', function (t) {
   t.end()
 })
 
-test('lru recently gotten with weighed length', function (t) {
+test('lru recently gotten with weighed length', function(t) {
   var cache = new LRU({
     max: 8,
-    length: function (item) { return item.length }
+    length: function(item) {
+      return item.length
+    },
   })
   cache.set('a', 'A')
   cache.set('b', 'BB')
@@ -159,10 +165,12 @@ test('lru recently gotten with weighed length', function (t) {
   t.end()
 })
 
-test('lru recently updated with weighed length', function (t) {
+test('lru recently updated with weighed length', function(t) {
   var cache = new LRU({
     max: 8,
-    length: function (item) { return item.length }
+    length: function(item) {
+      return item.length
+    },
   })
   cache.set('a', 'A')
   cache.set('b', 'BB')
@@ -185,10 +193,12 @@ test('lru recently updated with weighed length', function (t) {
   t.end()
 })
 
-test('set returns proper booleans', function (t) {
+test('set returns proper booleans', function(t) {
   var cache = new LRU({
     max: 5,
-    length: function (item) { return item.length }
+    length: function(item) {
+      return item.length
+    },
   })
 
   t.equal(cache.set('a', 'A'), true)
@@ -201,48 +211,48 @@ test('set returns proper booleans', function (t) {
   t.end()
 })
 
-test('drop the old items', function (t) {
+test('drop the old items', function(t) {
   var n = process.env.CI ? 1000 : 100
   var cache = new LRU({
     max: 5,
-    maxAge: n * 2
+    maxAge: n * 2,
   })
 
   cache.set('a', 'A')
 
-  setTimeout(function () {
+  setTimeout(function() {
     cache.set('b', 'b')
     t.equal(cache.get('a'), 'A')
   }, n)
 
-  setTimeout(function () {
+  setTimeout(function() {
     cache.set('c', 'C')
     // timed out
     t.notOk(cache.get('a'))
   }, n * 3)
 
-  setTimeout(function () {
+  setTimeout(function() {
     t.notOk(cache.get('b'))
     t.equal(cache.get('c'), 'C')
   }, n * 4)
 
-  setTimeout(function () {
+  setTimeout(function() {
     t.notOk(cache.get('c'))
     t.end()
   }, n * 6)
 })
 
-test('manual pruning', function (t) {
+test('manual pruning', function(t) {
   var cache = new LRU({
     max: 5,
-    maxAge: 50
+    maxAge: 50,
   })
 
   cache.set('a', 'A')
   cache.set('b', 'b')
   cache.set('c', 'C')
 
-  setTimeout(function () {
+  setTimeout(function() {
     cache.prune()
 
     t.notOk(cache.get('a'))
@@ -253,39 +263,39 @@ test('manual pruning', function (t) {
   }, 100)
 })
 
-test('individual item can have its own maxAge', function (t) {
+test('individual item can have its own maxAge', function(t) {
   var cache = new LRU({
     max: 5,
-    maxAge: 50
+    maxAge: 50,
   })
 
   cache.set('a', 'A', 20)
-  setTimeout(function () {
+  setTimeout(function() {
     t.notOk(cache.get('a'))
     t.end()
   }, 25)
 })
 
-test('individual item can have its own maxAge > cache', function (t) {
+test('individual item can have its own maxAge > cache', function(t) {
   var cache = new LRU({
     max: 5,
-    maxAge: 20
+    maxAge: 20,
   })
 
   cache.set('a', 'A', 50)
-  setTimeout(function () {
+  setTimeout(function() {
     t.equal(cache.get('a'), 'A')
     t.end()
   }, 25)
 })
 
-test('disposal function', function (t) {
+test('disposal function', function(t) {
   var disposed = false
   var cache = new LRU({
     max: 1,
-    dispose: function (k, n) {
+    dispose: function(k, n) {
       disposed = n
-    }
+    },
   })
 
   cache.set(1, 1)
@@ -300,14 +310,14 @@ test('disposal function', function (t) {
   t.end()
 })
 
-test('no dispose on set', function (t) {
+test('no dispose on set', function(t) {
   var disposed = false
   var cache = new LRU({
     max: 1,
     noDisposeOnSet: true,
-    dispose: function (k, n) {
+    dispose: function(k, n) {
       disposed = n
-    }
+    },
   })
 
   cache.set(1, 1)
@@ -316,18 +326,18 @@ test('no dispose on set', function (t) {
   t.end()
 })
 
-test('disposal function on too big of item', function (t) {
+test('disposal function on too big of item', function(t) {
   var disposed = false
   var cache = new LRU({
     max: 1,
-    length: function (k) {
+    length: function(k) {
       return k.length
     },
-    dispose: function (k, n) {
+    dispose: function(k, n) {
       disposed = n
-    }
+    },
   })
-  var obj = [ 1, 2 ]
+  var obj = [1, 2]
 
   t.equal(disposed, false)
   cache.set('obj', obj)
@@ -335,10 +345,10 @@ test('disposal function on too big of item', function (t) {
   t.end()
 })
 
-test('has()', function (t) {
+test('has()', function(t) {
   var cache = new LRU({
     max: 1,
-    maxAge: 10
+    maxAge: 10,
   })
 
   cache.set('foo', 'bar')
@@ -346,16 +356,16 @@ test('has()', function (t) {
   cache.set('blu', 'baz')
   t.equal(cache.has('foo'), false)
   t.equal(cache.has('blu'), true)
-  setTimeout(function () {
+  setTimeout(function() {
     t.equal(cache.has('blu'), false)
     t.end()
   }, 15)
 })
 
-test('stale', function (t) {
+test('stale', function(t) {
   var cache = new LRU({
     maxAge: 10,
-    stale: true
+    stale: true,
   })
 
   t.equal(cache.allowStale, true)
@@ -367,7 +377,7 @@ test('stale', function (t) {
   cache.set('foo', 'bar')
   t.equal(cache.get('foo'), 'bar')
   t.equal(cache.has('foo'), true)
-  setTimeout(function () {
+  setTimeout(function() {
     t.equal(cache.has('foo'), false)
     t.equal(cache.get('foo'), 'bar')
     t.equal(cache.get('foo'), undefined)
@@ -375,7 +385,7 @@ test('stale', function (t) {
   }, 15)
 })
 
-test('lru update via set', function (t) {
+test('lru update via set', function(t) {
   var cache = new LRU({ max: 2 })
 
   cache.set('foo', 1)
@@ -391,7 +401,7 @@ test('lru update via set', function (t) {
   t.end()
 })
 
-test('least recently set w/ peek', function (t) {
+test('least recently set w/ peek', function(t) {
   var cache = new LRU(2)
   cache.set('a', 'A')
   cache.set('b', 'B')
@@ -403,7 +413,7 @@ test('least recently set w/ peek', function (t) {
   t.end()
 })
 
-test('pop the least used item', function (t) {
+test('pop the least used item', function(t) {
   var cache = new LRU(3)
   var last
 
@@ -443,7 +453,7 @@ test('pop the least used item', function (t) {
   t.end()
 })
 
-test('get and set only accepts strings and numbers as keys', function (t) {
+test('get and set only accepts strings and numbers as keys', function(t) {
   var cache = new LRU()
 
   cache.set('key', 'value')
@@ -455,7 +465,7 @@ test('get and set only accepts strings and numbers as keys', function (t) {
   t.end()
 })
 
-test('peek with wierd keys', function (t) {
+test('peek with wierd keys', function(t) {
   var cache = new LRU()
 
   cache.set('key', 'value')
@@ -464,14 +474,19 @@ test('peek with wierd keys', function (t) {
   t.equal(cache.peek('key'), 'value')
   t.equal(cache.peek(123), 456)
 
-  t.equal(cache.peek({
-    toString: function () { return 'key' }
-  }), undefined)
+  t.equal(
+    cache.peek({
+      toString: function() {
+        return 'key'
+      },
+    }),
+    undefined
+  )
 
   t.end()
 })
 
-test('invalid length calc results in basic length', function (t) {
+test('invalid length calc results in basic length', function(t) {
   var l = new LRU({ length: true })
   t.isa(l.lengthCalculator, 'function')
   l.lengthCalculator = 'not a function'
@@ -479,11 +494,11 @@ test('invalid length calc results in basic length', function (t) {
   t.end()
 })
 
-test('change length calculator recalculates', function (t) {
+test('change length calculator recalculates', function(t) {
   var l = new LRU({ max: 3 })
   l.set(2, 2)
   l.set(1, 1)
-  l.lengthCalculator = function (key, val) {
+  l.lengthCalculator = function(key, val) {
     return key + val
   }
   t.equal(l.itemCount, 1)
@@ -491,7 +506,7 @@ test('change length calculator recalculates', function (t) {
   t.equal(l.get(1), 1)
   l.set(0, 1)
   t.equal(l.itemCount, 2)
-  l.lengthCalculator = function (key, val) {
+  l.lengthCalculator = function(key, val) {
     return key
   }
   t.equal(l.lengthCalculator(1, 10), 1)
@@ -502,18 +517,24 @@ test('change length calculator recalculates', function (t) {
   t.end()
 })
 
-test('delete non-existent item has no effect', function (t) {
+test('delete non-existent item has no effect', function(t) {
   var l = new LRU({ max: 2 })
   l.set('foo', 1)
   l.set('bar', 2)
   l.del('baz')
-  t.same(l.dumpLru().toArray().map(function (hit) {
-    return hit.key
-  }), [ 'bar', 'foo' ])
+  t.same(
+    l
+      .dumpLru()
+      .toArray()
+      .map(function(hit) {
+        return hit.key
+      }),
+    ['bar', 'foo']
+  )
   t.end()
 })
 
-test('maxAge on list, cleared in forEach', function (t) {
+test('maxAge on list, cleared in forEach', function(t) {
   var l = new LRU({ stale: true })
   l.set('foo', 1)
 
@@ -525,7 +546,7 @@ test('maxAge on list, cleared in forEach', function (t) {
   l.maxAge = 1
 
   var saw = false
-  l.forEach(function (val, key) {
+  l.forEach(function(val, key) {
     saw = true
     t.equal(key, 'foo')
   })
@@ -537,11 +558,15 @@ test('maxAge on list, cleared in forEach', function (t) {
 
 test('bad max/maxAge options', t => {
   t.throws(() => new LRU({ maxAge: true }), 'maxAge must be a number')
-  t.throws(() => { new LRU().maxAge = 'foo' }, 'maxAge must be a number')
+  t.throws(() => {
+    new LRU().maxAge = 'foo'
+  }, 'maxAge must be a number')
   t.throws(() => new LRU({ max: true }), 'max must be a non-negative number')
-  t.throws(() => { new LRU().max = 'foo' }, 'max must be a non-negative number')
+  t.throws(() => {
+    new LRU().max = 'foo'
+  }, 'max must be a non-negative number')
   const c = new LRU({
-    max: 2
+    max: 2,
   })
   t.throw(() => c.set('a', 'A', 'true'), 'maxAge must be a number')
   t.end()
@@ -561,5 +586,18 @@ test('update age on get', t => {
   const e3 = l.dump()[0].e
   t.ok(e1 < e2, 'time updated on first get')
   t.ok(e2 < e3, 'time updated on second get')
+  t.end()
+})
+
+test('autoTrim', function(t) {
+  var cache = new LRU({ max: 2, autoTrim: false })
+  cache.set('a', 'A')
+  cache.set('b', 'B')
+  cache.set('c', 'C')
+  t.equal(cache.get('c'), 'C')
+  t.equal(cache.get('b'), 'B')
+  t.equal(cache.get('a'), 'A')
+  cache.trim()
+  t.equal(cache.get('c'), undefined)
   t.end()
 })

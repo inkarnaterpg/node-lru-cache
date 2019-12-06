@@ -1,7 +1,7 @@
 var test = require('tap').test
 var LRU = require('../')
 
-test('forEach', function (t) {
+test('forEach', function(t) {
   var l = new LRU(5)
   var i
   for (i = 0; i < 10; i++) {
@@ -9,7 +9,7 @@ test('forEach', function (t) {
   }
 
   i = 9
-  l.forEach(function (val, key, cache) {
+  l.forEach(function(val, key, cache) {
     t.equal(cache, l)
     t.equal(key, i)
     t.equal(val, i.toString(2))
@@ -20,10 +20,10 @@ test('forEach', function (t) {
   l.get(6)
   l.get(8)
 
-  var order = [ 8, 6, 9, 7, 5 ]
+  var order = [8, 6, 9, 7, 5]
   i = 0
 
-  l.forEach(function (val, key, cache) {
+  l.forEach(function(val, key, cache) {
     var j = order[i++]
     t.equal(cache, l)
     t.equal(key, j)
@@ -33,7 +33,7 @@ test('forEach', function (t) {
 
   i = 0
   order.reverse()
-  l.rforEach(function (val, key, cache) {
+  l.rforEach(function(val, key, cache) {
     var j = order[i++]
     t.equal(cache, l)
     t.equal(key, j)
@@ -44,7 +44,7 @@ test('forEach', function (t) {
   t.end()
 })
 
-test('keys() and values()', function (t) {
+test('keys() and values()', function(t) {
   var l = new LRU(5)
   var i
   for (i = 0; i < 10; i++) {
@@ -64,7 +64,7 @@ test('keys() and values()', function (t) {
   t.end()
 })
 
-test('all entries are iterated over', function (t) {
+test('all entries are iterated over', function(t) {
   var l = new LRU(5)
   var i
   for (i = 0; i < 10; i++) {
@@ -72,7 +72,7 @@ test('all entries are iterated over', function (t) {
   }
 
   i = 0
-  l.forEach(function (val, key, cache) {
+  l.forEach(function(val, key, cache) {
     if (i > 0) {
       cache.del(key)
     }
@@ -85,7 +85,7 @@ test('all entries are iterated over', function (t) {
   t.end()
 })
 
-test('all stale entries are removed', function (t) {
+test('all stale entries are removed', function(t) {
   var l = new LRU({ max: 5, maxAge: -5, stale: true })
   var i
   for (i = 0; i < 10; i++) {
@@ -93,7 +93,7 @@ test('all stale entries are removed', function (t) {
   }
 
   i = 0
-  l.forEach(function () {
+  l.forEach(function() {
     i += 1
   })
 
@@ -103,20 +103,20 @@ test('all stale entries are removed', function (t) {
   t.end()
 })
 
-test('expires', function (t) {
+test('expires', function(t) {
   var l = new LRU({
     max: 10,
-    maxAge: 50
+    maxAge: 50,
   })
   var i
   for (i = 0; i < 10; i++) {
-    l.set(i.toString(), i.toString(2), ((i % 2) ? 25 : undefined))
+    l.set(i.toString(), i.toString(2), i % 2 ? 25 : undefined)
   }
 
   i = 0
-  var order = [ 8, 6, 4, 2, 0 ]
-  setTimeout(function () {
-    l.forEach(function (val, key, cache) {
+  var order = [8, 6, 4, 2, 0]
+  setTimeout(function() {
+    l.forEach(function(val, key, cache) {
       var j = order[i++]
       t.equal(cache, l)
       t.equal(key, j.toString())
@@ -124,9 +124,11 @@ test('expires', function (t) {
     })
     t.equal(i, order.length)
 
-    setTimeout(function () {
+    setTimeout(function() {
       var count = 0
-      l.forEach(function (val, key, cache) { count++ })
+      l.forEach(function(val, key, cache) {
+        count++
+      })
       t.equal(0, count)
       t.end()
     }, 25)

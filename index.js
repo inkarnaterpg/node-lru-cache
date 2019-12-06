@@ -290,14 +290,12 @@ const isStale = (self, hit) => {
 }
 
 const conditionallyTrim = self => {
-  console.log('conditionallyTrim()')
   if (self[AUTO_TRIM]) {
     trim(self)
   }
 }
 
 const trim = self => {
-  console.log('trim()', self[LENGTH], self[MAX])
   if (self[LENGTH] > self[MAX]) {
     for (let walker = self[LRU_LIST].tail; self[LENGTH] > self[MAX] && walker !== null; ) {
       // We know that we're about to delete this one, and also
@@ -311,7 +309,6 @@ const trim = self => {
 }
 
 const del = (self, node) => {
-  console.log('del', node)
   if (node) {
     const hit = node.value
     if (self[DISPOSE]) self[DISPOSE](hit.key, hit.value)

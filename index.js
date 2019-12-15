@@ -33,8 +33,7 @@ class LRUCache {
 
     if (options.max && (typeof options.max !== 'number' || options.max < 0))
       throw new TypeError('max must be a non-negative number')
-    // Kind of weird to have a default max of Infinity, but oh well.
-    const max = (this[MAX] = options.max || Infinity)
+    const max = (this[MAX] = options.max || 0)
 
     const lc = options.length || naiveLength
     this[LENGTH_CALCULATOR] = typeof lc !== 'function' ? naiveLength : lc
